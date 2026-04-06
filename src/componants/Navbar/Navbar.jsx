@@ -8,7 +8,7 @@ export default function Header() {
   return (
     <header className="w-full border-b">
       {/* Top Bar (desktop only) */}
-      <div className="lg:flex md:flex sm:hidden justify-between items-center text-sm px-6 py-2 bg-gray-50 scroll-auto">
+      <div className="lg:flex md:flex sm:hidden justify-between items-center text-sm px-6 py-2 bg-gray-50  ">
         <div className="flex gap-6">
           <span>🚚 Free Shipping on Orders 500 EGP</span>
           <span>🆕 New Arrivals Daily</span>
@@ -22,7 +22,7 @@ export default function Header() {
       </div>
 
       {/* Main Navbar */}
-      <div className="flex items-center justify-between px-4 md:px-6 py-4 fixed z-50 w-full bg-white">
+      <div className="flex items-center justify-between px-4 md:px-6 py-4 fixed z-50 w-full bg-white scrolling-touch">
         {/* Left */}
         <div className="flex items-center gap-3">
           <button className="lg:hidden" onClick={() => setOpen(true)}>

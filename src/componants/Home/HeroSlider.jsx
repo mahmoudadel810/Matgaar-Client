@@ -58,7 +58,7 @@ export default function HeroSlider() {
             <img
               src={s.image}
               alt=""
-              className="absolute inset-0 h-full w-full object-cover"
+              className="absolute w-full h-full inset-0 object-cover "
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/20" />
             <div className="relative z-10 flex h-full max-w-7xl mx-auto px-4 md:px-6 items-center">
@@ -80,8 +80,8 @@ export default function HeroSlider() {
           </div>
         ))}
       </div>
-
-      <button
+      <dev className="absolute bottom-0 left-0 right-0 top-0  z-30 bg-green-500/50">
+        <button
         type="button"
         onClick={() => go(-1)}
         className="absolute left-2 md:left-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/90 p-2 text-gray-900 shadow-md transition hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
@@ -97,6 +97,11 @@ export default function HeroSlider() {
       >
         <ChevronRight className="h-6 w-6" />
       </button>
+        </dev>
+        
+     
+
+      
 
       <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 gap-2">
         {slides.map((s, i) => (
