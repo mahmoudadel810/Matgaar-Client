@@ -31,6 +31,37 @@ const slides = [
     href: "/shop",
   },
 ];
+const descs = [
+  {
+    id: 1,
+    title: "Fresh groceries, delivered fast",
+    subtitle: "Up to 30% off your first order — quality you can taste.",
+    image:
+      "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1600&q=80",
+    cta: "Shop now",
+    href: "/shop",
+  },
+  {
+    id: 2,
+    title: "Seasonal fruits & organic picks",
+    subtitle: "Handpicked daily from trusted local suppliers.",
+    image:
+      "https://images.unsplash.com/photo-1610832958506-aa56368174cf?auto=format&fit=crop&w=1600&q=80",
+    cta: "Browse produce",
+    href: "/shop",
+  },
+  {
+    id: 3,
+    title: "Pantry essentials in one place",
+    subtitle: "Stock up on dairy, snacks, and more with free shipping over 500 EGP.",
+    image:
+      "https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=1600&q=80",
+    cta: "View deals",
+    href: "/shop",
+  },
+];
+
+  
 
 export default function HeroSlider() {
   const [index, setIndex] = useState(0);
@@ -61,6 +92,21 @@ export default function HeroSlider() {
               className="absolute w-full h-full inset-0 object-cover "
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/20" />
+            
+          </div>
+        ))}
+      </div>
+      <dev className="absolute bottom-0 left-0 right-0 top-0  z-30 bg-green-500/50">
+      {descs.map((s, i) => (
+          <div
+            key={s.id}
+            className={`absolute inset-0 transition-opacity duration-700 ease-out ${
+              i === index ? "opacity-100 z-[1]" : "opacity-0 z-0 pointer-events-none"
+            }`}
+            aria-hidden={i !== index}
+          >
+           
+            <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/20" />
             <div className="relative z-10 flex h-full max-w-7xl mx-auto px-4 md:px-6 items-center">
               <div className="max-w-xl text-white">
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
@@ -79,8 +125,6 @@ export default function HeroSlider() {
             </div>
           </div>
         ))}
-      </div>
-      <dev className="absolute bottom-0 left-0 right-0 top-0  z-30 bg-green-500/50">
         <button
         type="button"
         onClick={() => go(-1)}

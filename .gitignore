@@ -11,6 +11,12 @@ node_modules
 dist
 dist-ssr
 *.local
+backend/node_modules
+backend/.env
+mobile/.dart_tool
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/build
 
 # Editor directories and files
 .vscode/*

@@ -1,15 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Search, Heart, ShoppingCart, User, Menu, X, Headphones, ChevronDown } from "lucide-react";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
+  const [showTopBar, setShowTopBar] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY === 0) {
+        setShowTopBar(true);
+      } else {
+        setShowTopBar(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className="w-full border-b">
-      {/* Top Bar (desktop only) */}
-      <div className="lg:flex md:flex sm:hidden justify-between items-center text-sm px-6 py-2 bg-gray-50  ">
-        <div className="flex gap-6">
+    <header className="w-full border-b ">
+      {/* Top Bar */}
+      <div
+        className={`flex md:flex  justify-between items-center text-sm px-6  py-4 bg-gray-50 fixed top-0 left-0 w-full z-50 transition-all duration-400  ${
+          showTopBar ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 "
+        }`}
+      >
+        <div className="flex gap-6">hidden
           <span>🚚 Free Shipping on Orders 500 EGP</span>
           <span>🆕 New Arrivals Daily</span>
         </div>
@@ -22,7 +40,7 @@ export default function Header() {
       </div>
 
       {/* Main Navbar */}
-      <div className="flex items-center justify-between px-4 md:px-6 py-4 fixed z-50 w-full bg-white scrolling-touch">
+      <div className={`flex items-center justify-between mx-auto px-4 md:px-6 py-4  fixed z-40 w-full bg-white  ${showTopBar ? "mt-[40px]" : "mt-0"}`}>
         {/* Left */}
         <div className="flex items-center gap-3">
           <button className="lg:hidden" onClick={() => setOpen(true)}>
@@ -35,7 +53,7 @@ export default function Header() {
         </div>
 
         {/* Search */}
-        <div className=" md:flex lg:flex sm:hidden items-center w-1/3 border-2 border-green-500 rounded-full overflow-hidden focus-within:ring-2 focus-within:ring-green-400 transition">
+        <div className="md:flex lg:flex sm:hidden items-center w-1/3 border-2 border-green-500 rounded-full overflow-hidden focus-within:ring-2 focus-within:ring-green-400 transition">
           <input
             type="text"
             placeholder="Search for products..."
@@ -47,9 +65,9 @@ export default function Header() {
         </div>
 
         {/* Desktop Nav */}
-        <nav className=" sm:hidden md:flex lg:flex  items-center gap-6">
-          <a href="#" className="hover:text-green-600">Home</a>
-          <a href="#" className="hover:text-green-600">Shop</a>
+        <nav className="sm:hidden md:flex lg:flex items-center gap-6">
+          <a href="/" className="hover:text-green-600">Home</a>
+          <a href="/shop" className="hover:text-green-600">Shop</a>
 
           {/* Dropdown */}
           <div className="relative">
@@ -79,14 +97,14 @@ export default function Header() {
 
         {/* Right */}
         <div className="flex items-center gap-4">
-          <Heart className=" md:block hover:text-green-600 cursor-pointer" />
+          <Heart className="md:block hover:text-green-600 cursor-pointer" />
 
-          <div className="relative  sm:hidden  lg:flex  md:block">
+          <a href="/cart" className="relative sm:hidden lg:flex md:block">
             <ShoppingCart className="cursor-pointer hover:text-green-600" />
             <span className="absolute -top-2 -right-2 bg-green-600 text-white text-xs px-1 rounded-full">
               1
             </span>
-          </div>
+          </a>
 
           <button className="md:flex sm:hidden items-center gap-2 border-2 border-green-600 text-green-600 px-4 py-2 rounded-full hover:bg-green-600 hover:text-white transition">
             <User size={16} />
@@ -132,7 +150,6 @@ export default function Header() {
               <a href="#">Home</a>
               <a href="#">Shop</a>
 
-              {/* Mobile Dropdown */}
               <div>
                 <button
                   onClick={() => setCatOpen(!catOpen)}
