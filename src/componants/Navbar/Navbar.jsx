@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Search, Heart, ShoppingCart, User, Menu, X, Headphones, ChevronDown } from "lucide-react";
+import React, { useState, useEffect, useContext } from "react";
+import { Search, Heart, ShoppingCart, User, Menu, X, Headphones, ChevronDown , LogOut } from "lucide-react";
+import { UserContext } from "../../contexts/User.context";
 
 export default function Header() {
+  const { userToken, userProfile, setUserToken, setUserProfile } = useContext(UserContext);
   const [open, setOpen] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
   const [showTopBar, setShowTopBar] = useState(true);
@@ -15,32 +17,43 @@ export default function Header() {
       }
     };
 
+   
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
+ const logOut =()=>{
+      console.log("user in logout");
+      
+      localStorage.removeItem('userToken')
+      setUserToken(null)
+      setUserProfile(null)
+    }
   return (
-    <header className="w-full border-b ">
+    <header className="w-full border-b z-50 ">
       {/* Top Bar */}
       <div
-        className={`flex md:flex  justify-between items-center text-sm px-6  py-4 bg-gray-50 fixed top-0 left-0 w-full z-50 transition-all duration-400  ${
-          showTopBar ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 "
+        className={`md:flex justify-between sm:hidden items-center text-sm bg-gray-50 fixed top-0 left-0 w-full z-50 transition-all duration-400 ${
+          showTopBar ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
         }`}
       >
-        <div className="flex gap-6">hidden
-          <span>🚚 Free Shipping on Orders 500 EGP</span>
-          <span>🆕 New Arrivals Daily</span>
-        </div>
-        <div className="flex gap-6 items-center">
-          <span>📞 +1 (800) 123-4567</span>
-          <span>✉️ support@freshcart.com</span>
-          <button className="hover:text-green-600">Sign In</button>
-          <button className="hover:text-green-600">Sign Up</button>
+        <div className="container mx-auto  px-4 md:px-6 flex justify-between items-center gap-6">
+          <div className="flex gap-6">
+            <span>🚚 Free Shipping on Orders 500 EGP</span>
+            <span>🆕 New Arrivals Daily</span>
+          </div>
+          <div className="flex gap-6 items-center">
+            <span>📞 +1 (800) 123-4567</span>
+            <span>✉️ support@freshcart.com</span>
+            <button className="hover:text-green-600">Sign In</button>
+            <button className="hover:text-green-600">Sign Up</button>
+          </div>
         </div>
       </div>
 
       {/* Main Navbar */}
-      <div className={`flex items-center justify-between mx-auto px-4 md:px-6 py-4  fixed z-40 w-full bg-white  ${showTopBar ? "mt-[40px]" : "mt-0"}`}>
+      <div className={`fixed z-40 w-full bg-white ${showTopBar ? "mt-5" : "mt-0"}`}>
+        <div className="container mx-auto  px-4 md:px-6 py-4 flex items-center justify-between gap-4">
         {/* Left */}
         <div className="flex items-center gap-3">
           <button className="lg:hidden" onClick={() => setOpen(true)}>
@@ -53,7 +66,7 @@ export default function Header() {
         </div>
 
         {/* Search */}
-        <div className="md:flex lg:flex sm:hidden items-center w-1/3 border-2 border-green-500 rounded-full overflow-hidden focus-within:ring-2 focus-within:ring-green-400 transition">
+        <div className="sm:hidden md:flex items-center flex-1 max-w-xl border-2 border-green-500 rounded-full overflow-hidden focus-within:ring-2 focus-within:ring-green-400 transition">
           <input
             type="text"
             placeholder="Search for products..."
@@ -65,7 +78,7 @@ export default function Header() {
         </div>
 
         {/* Desktop Nav */}
-        <nav className="sm:hidden md:flex lg:flex items-center gap-6">
+        <nav className=" sm:hidden md:flex  items-center gap-6">
           <a href="/" className="hover:text-green-600">Home</a>
           <a href="/shop" className="hover:text-green-600">Shop</a>
 
@@ -88,29 +101,45 @@ export default function Header() {
             )}
           </div>
 
-          <a href="#" className="hover:text-green-600">Brands</a>
+          <a href="/brands" className="hover:text-green-600">Brands</a>
 
-          <a href="#" className="flex items-center gap-1 text-green-600">
+          <a href="/support" className="flex items-center gap-1 text-green-600">
             🎧 Support
           </a>
         </nav>
 
         {/* Right */}
         <div className="flex items-center gap-4">
-          <Heart className="md:block hover:text-green-600 cursor-pointer" />
+          <Heart className="hover:text-green-600 cursor-pointer" />
 
-          <a href="/cart" className="relative sm:hidden lg:flex md:block">
+          <a href="/cart" className="relative">
             <ShoppingCart className="cursor-pointer hover:text-green-600" />
             <span className="absolute -top-2 -right-2 bg-green-600 text-white text-xs px-1 rounded-full">
               1
             </span>
           </a>
 
-          <button className="md:flex sm:hidden items-center gap-2 border-2 border-green-600 text-green-600 px-4 py-2 rounded-full hover:bg-green-600 hover:text-white transition">
-            <User size={16} />
-            Sign In
-          </button>
+          <div className="sm:hidden md:flex items-center gap-2">
+            {userToken && userProfile ? (
+              <button
+                onClick={logOut}
+                className="flex items-center gap-2 border-2 bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-500 transition"
+              >
+                <LogOut size={16} />
+                Log out
+              </button>
+            ) : (
+              <a
+                href="/login"
+                className="flex items-center gap-2 border-2 bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-500 transition"
+              >
+                <User size={16} />
+                Sign In
+              </a>
+            )}
+          </div>
         </div>
+      </div>
       </div>
 
       {/* Mobile + Tablet Sidebar */}
@@ -147,8 +176,8 @@ export default function Header() {
 
             {/* Links */}
             <nav className="flex flex-col gap-4 text-gray-700">
-              <a href="#">Home</a>
-              <a href="#">Shop</a>
+              <a href="/">Home</a>
+              <a href="/shop">Shop</a>
 
               <div>
                 <button
@@ -168,7 +197,7 @@ export default function Header() {
                 )}
               </div>
 
-              <a href="#">Brands</a>
+              <a href="/brands">Brands</a>
             </nav>
 
             <hr />
@@ -191,13 +220,32 @@ export default function Header() {
             <hr />
 
             {/* Buttons */}
-            <div className="flex gap-3">
-              <button className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:opacity-90">
-                Sign In
-              </button>
-              <button className="flex-1 border-2 border-green-600 text-green-600 py-2 rounded-lg hover:bg-green-600 hover:text-white transition">
-                Sign Up
-              </button>
+            <div className="flex flex-col gap-3">
+              {userToken && userProfile ? (
+                <button
+                  onClick={logOut}
+                  className="flex items-center justify-center gap-2 border-2 bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-500 transition"
+                >
+                  <LogOut size={16} />
+                  Log out
+                </button>
+              ) : (
+                <>
+                  <a
+                    href="/login"
+                    className="flex items-center justify-center gap-2 border-2 bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-500 transition"
+                  >
+                    <User size={16} />
+                    Sign In
+                  </a>
+                  <a
+                    href="/signup"
+                    className="flex items-center justify-center border-2 border-green-600 text-green-600 py-2 rounded-lg hover:bg-green-600 hover:text-white transition"
+                  >
+                    Sign Up
+                  </a>
+                </>
+              )}
             </div>
 
             {/* Support */}

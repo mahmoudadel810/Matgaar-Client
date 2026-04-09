@@ -1,14 +1,73 @@
 import React from "react";
-import { ShoppingCart, Star ,Heart} from "lucide-react";
+import { ShoppingCart, Star ,Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { prodContext } from "../../contexts/product.context";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { ReloadDots } from "../loading/loading";
 
 
 
 export default function ProductsSection() {
   const { products } = React.useContext(prodContext);
-  return (
-    <section className="bg-gray-50 border-y border-gray-100 f">
+  const userToken = localStorage.getItem('userToken');
+  const [wishlist, setWishlist] = React.useState([]);
+  
+  function getProducts()
+  {
+    return axios.get('https://ecommerce.routemisr.com/api/v1/products').then(res=>res.data.data.products)
+  }
+  let {isLoading }=useQuery({ queryKey: ['dataOfBrands'], queryFn: getProducts })
+
+  // Fetch wishlist on mount
+  React.useEffect(() => {
+    const fetchWishlist = async () => {
+      try {
+        const response = await axios.get('https://ecommerce.routemisr.com/api/v1/wishlist', {
+          headers: {
+            token: userToken,
+          },
+        });
+        setWishlist(response.data.data.map(item => item.id));
+      } catch (error) {
+        console.error('Failed to fetch wishlist:', error);
+      }
+    };
+    if (userToken) fetchWishlist();
+  }, [userToken]);
+
+  // Toggle wishlist
+  const toggleWishlist = async (productId) => {
+    const isInWishlist = wishlist.includes(productId);
+    try {
+      if (isInWishlist) {
+        // Remove from wishlist
+        await axios.delete(`https://ecommerce.routemisr.com/api/v1/wishlist/${productId}`, {
+          headers: {
+            token: userToken,
+          },
+        });
+        setWishlist(prev => prev.filter(id => id !== productId));
+      } else {
+        // Add to wishlist
+        await axios.post('https://ecommerce.routemisr.com/api/v1/wishlist', { productId }, {
+          headers: {
+            token: userToken,
+          },
+        });
+        setWishlist(prev => [...prev, productId]);
+      }
+    } catch (error) {
+      console.error('Failed to toggle wishlist:', error);
+    }
+  }
+
+
+  
+  
+  return (<>
+  {
+    isLoading ?<ReloadDots/> : <section className="bg-gray-50 border-y border-gray-100 f">
       <div className="mx-auto container px-4 md:px-6 py-12 md:py-16">
         <div className="flex justify-between items-center sm:flex-row sm:items-end sm:justify-between gap-4 mb-8 md:mb-10">
           <div>
@@ -24,35 +83,38 @@ export default function ProductsSection() {
         </div>
 
         <div className="grid  sm:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-8">
-          {products.map((p) => (
+          {products?.map((d) => (
             <article
-              key={p.id}
+            
+              key={d.id}
               className="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:shadow-md"
             >
               <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
                 <img
-                  src={p.imageCover}
-                  alt={p.title}
+                  src={d.imageCover}
+                  alt={d.title}
                   className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                 />
-                {p.slug && (
+                {d.slug && (
                   <span className="absolute left-3 top-3 rounded-full bg-green-600 px-3 py-1 text-xs font-semibold text-white">
-                    {p.slug}
+                    {d.slug}
                   </span>
                 )}
               </div>
               <div className="flex flex-1 flex-col p-5 ">
-                <h3 className="text-lg font-semibold text-gray-900">{p.title}</h3>
+                <h3 className="text-lg font-semibold text-gray-900">{d.title}</h3>
                 <div className="mt-2 flex items-center justify-between gap-1 text-amber-500">
-                  <div flex items-center gap-2 className="flex"> 
+                  <div className="flex items-center gap-2"> 
                     <Star className="h-4 w-4 fill-current" aria-hidden />
-                  <span className="text-sm font-medium text-gray-700">{p.ratingsAverage}</span>
+                  <span className="text-sm font-medium text-gray-700">{d.ratingsAverage}</span>
                   </div>
-                  <Heart/>
+                  <div className="cursor-pointer" onClick={() => toggleWishlist(d.id)}>
+                    <Heart className={`text-red-500 ${wishlist.includes(d.id) ? 'fill-current' : ''}`}/>
+                  </div>
                 </div>
                 <div className="mt-4 flex items-center justify-between gap-3  ">
                   <p className="text-xl font-bold text-green-700">
-                    {p.quantity} <span className="text-sm font-normal text-gray-500">EGP / {p.price}</span>
+                    {d.quantity} <span className="text-sm font-normal text-gray-500">EGP / {d.price}</span>
                   </p>
                   <button
                     type="button"
@@ -68,5 +130,6 @@ export default function ProductsSection() {
         </div>
       </div>
     </section>
-  );
+      }
+  </>);
 }

@@ -2,6 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Link as LinkIcon } from "lucide-react";
 import { CategContext } from "../../contexts/categories.context.jsx";
+import { useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { ReloadDots } from "../loading/loading.jsx";
 
 export default function CategoriesSection() {
   const { categories } = React.useContext(CategContext);
@@ -12,9 +15,17 @@ export default function CategoriesSection() {
     const el = myRef.current[id];
     //console.log("ID:", el.id); // ✅ هيطبع الـ _id
   };
+  function getCategories()
+  {
+    return axios.get('https://ecommerce.routemisr.com/api/v1/categories').then(res=>res.data.data.categories)
+  }
+  let {isLoading ,data}=useQueryClient({ queryKey: ['dataOfCategories'], queryFn: getCategories })
+  
+  
 
-  return (
-    <section className="container  mx-auto px-4 md:px-6 py-12 md:py-16">
+  return (<>
+  {
+    isLoading ? <ReloadDots/> : <section className="container mx-auto px-4 md:px-6 py-12 md:py-16">
       <div className="flex sm:items-end justify-between items-center gap-4 mb-8 md:mb-10">
         <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
           Shop by <span className="text-green-600 font-semibold">category</span>
@@ -50,5 +61,10 @@ export default function CategoriesSection() {
         ))}
       </div>
     </section>
+    }
+  
+  
+  </>
+    
   );
 }

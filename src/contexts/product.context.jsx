@@ -6,7 +6,7 @@ export const prodContext = createContext();
 const fetchCategories = async () => {
   try {
     const response = await axios.get("https://ecommerce.routemisr.com/api/v1/products");
-    console.log(response.data.data);
+    
     
     return response.data.data;
   } catch (error) {
