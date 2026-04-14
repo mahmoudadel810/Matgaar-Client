@@ -110,7 +110,9 @@ export default function Header() {
 
         {/* Right */}
         <div className="flex items-center gap-4">
-          <Heart className="hover:text-green-600 cursor-pointer" />
+          <a href="/wishlist">
+            <Heart className="hover:text-green-600 cursor-pointer" />
+          </a>
 
           <a href="/cart" className="relative">
             <ShoppingCart className="cursor-pointer hover:text-green-600" />

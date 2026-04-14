@@ -8,6 +8,7 @@ import Cart from './Cart/cart';
 import Brands from './componants/Brands/Brands';
 import Login from './componants/Login/Login';
 import Register from './componants/Register/Register';
+import Wishlist from './componants/Wishlist/Wishlist';
 
 
 
@@ -26,6 +27,7 @@ function App() {
         <Route path="/brands"        element={<Brands />} />
         <Route path="/login"        element={<Login />} />
         <Route path="/register"        element={<Register />} />
+        <Route path="/wishlist"        element={<Wishlist />} />
         
 
         <Route path="*"        element={<NotFound />} />

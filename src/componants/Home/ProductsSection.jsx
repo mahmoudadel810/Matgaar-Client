@@ -1,5 +1,5 @@
 import React from "react";
-import { ShoppingCart, Star ,Heart } from "lucide-react";
+import { ShoppingCart, Star, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { prodContext } from "../../contexts/product.context";
 import { useQuery } from "@tanstack/react-query";
@@ -21,6 +21,8 @@ export default function ProductsSection() {
 
   // Fetch wishlist on mount
   React.useEffect(() => {
+    console.log("user is her");
+    
     const fetchWishlist = async () => {
       try {
         const response = await axios.get('https://ecommerce.routemisr.com/api/v1/wishlist', {
@@ -42,27 +44,52 @@ export default function ProductsSection() {
     try {
       if (isInWishlist) {
         // Remove from wishlist
-        await axios.delete(`https://ecommerce.routemisr.com/api/v1/wishlist/${productId}`, {
+        const response = await axios.delete(`https://ecommerce.routemisr.com/api/v1/wishlist/${productId}`, {
           headers: {
             token: userToken,
           },
         });
         setWishlist(prev => prev.filter(id => id !== productId));
+        console.log(response);
+        if (response.status === "success"){
+          
+          alert(response.data.message);
+        }
       } else {
         // Add to wishlist
-        await axios.post('https://ecommerce.routemisr.com/api/v1/wishlist', { productId }, {
+        const response = await axios.post('https://ecommerce.routemisr.com/api/v1/wishlist', { productId }, {
           headers: {
             token: userToken,
           },
         });
+        console.log(response);
+        
         setWishlist(prev => [...prev, productId]);
+        if (response.status === "success"){
+          alert(response.data.message);
+        }
       }
     } catch (error) {
       console.error('Failed to toggle wishlist:', error);
     }
   }
 
-
+//add to cart function
+const addToCart = async (productId) => {
+    try {
+        const response = await axios.post('https://ecommerce.routemisr.com/api/v1/cart', { productId }, {
+          headers: {
+            token: userToken,   
+            },
+        });
+        console.log(response);
+        if (response.status === 200){
+            alert(response.data.message);
+        }
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+    }
+  };
   
   
   return (<>
@@ -117,6 +144,7 @@ export default function ProductsSection() {
                     {d.quantity} <span className="text-sm font-normal text-gray-500">EGP / {d.price}</span>
                   </p>
                   <button
+                      onClick={() => addToCart(d.id)}
                     type="button"
                     className="inline-flex items-center gap-2 rounded-full bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
                   >
